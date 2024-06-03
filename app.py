@@ -14,7 +14,7 @@ import pandas as pd
 import joblib
 
 # Load the trained model
-model = joblib.load('/content/logistic_model.pkl')
+model = joblib.load('logistic_model.pkl')
 
 # Title
 st.title("Titanic Survival Prediction App")
