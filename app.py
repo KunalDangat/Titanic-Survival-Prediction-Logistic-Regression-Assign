@@ -80,5 +80,9 @@ else:
 
 # Display prediction probability
 st.subheader('Prediction Probability')
-st.write(f"Probability of Not Surviving: {prediction_proba[0]:.2f}")
-st.write(f"Probability of Surviving: {prediction_proba[1]:.2f}")
+st.subheader("Prediction Probability")
+proba_df = pd.DataFrame({
+    'Probability of Not Surviving': [prediction_proba[0]],
+    'Probability of Surviving': [prediction_proba[1]]
+})
+st.write(proba_df)
