@@ -81,7 +81,11 @@ prediction_proba = model.predict_proba(input_df)
 # Display prediction
 st.subheader('Prediction')
 survived = 'Survived' if prediction[0] == 1 else 'Not Survived'
-st.write(survived)
+#st.write(survived)
+if prediction[0] == 1:
+    st.write(f'<span style="color: green; font-weight: bold;">{survived}</span>', unsafe_allow_html=True)
+else:
+    st.write(f'<span style="color: red; font-weight: bold;">{survived}</span>', unsafe_allow_html=True)
 
 # Display prediction probability
 
