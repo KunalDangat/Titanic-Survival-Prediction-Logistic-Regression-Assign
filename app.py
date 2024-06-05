@@ -24,45 +24,53 @@ st.write("""
 This app predicts whether a passenger survived the Titanic disaster based on their features.
 """)
 
-# Collect user inputs
-Pclass = st.selectbox("Passenger Class (1 = 1st, 2 = 2nd, 3 = 3rd)", [1, 2, 3])
-Age = st.number_input("Age", min_value=0, max_value=100, value=25)
-SibSp = st.number_input("Number of Siblings/Spouses Aboard", min_value=0, max_value=10, value=0)
-Parch = st.number_input("Number of Parents/Children Aboard", min_value=0, max_value=10, value=0)
-Fare = st.number_input("Fare", min_value=0.0, max_value=500.0, value=50.0)
-Sex = st.selectbox("Sex", ["male", "female"])
-Embarked = st.selectbox("Port of Embarkation (C = Cherbourg, Q = Queenstown, S = Southampton)", ["C", "Q", "S"])
+# Load the trained model
+with open('logistic_model.pkl', 'rb') as file:
+    model = pickle.load(file)
 
-# Convert categorical variables to the same format as the training data
-Sex_female = 1 if Sex == "female" else 0
-Sex_male = 1 if Sex == "male" else 0
-Embarked_C = 1 if Embarked == "C" else 0
-Embarked_Q = 1 if Embarked == "Q" else 0
-Embarked_S = 1 if Embarked == "S" else 0
+# Sidebar inputs
+st.sidebar.header("Input Features")
 
-# Create a dataframe for the inputs
-input_data = pd.DataFrame({
-    'Pclass': [Pclass],
-    'Age': [Age],
-    'SibSp': [SibSp],
-    'Parch': [Parch],
-    'Fare': [Fare],
-    'Sex_female': [Sex_female],
-    'Sex_male': [Sex_male],
-    'Embarked_C': [Embarked_C],
-    'Embarked_Q': [Embarked_Q],
-    'Embarked_S': [Embarked_S]
-})
+def user_input_features():
+    PassengerId = st.sidebar.number_input("PassengerId", min_value=1)
+    Pclass = st.sidebar.selectbox("Pclass", [1, 2, 3])
+    Age = st.sidebar.number_input("Age", min_value=0.0, max_value=100.0, value=30.0)
+    SibSp = st.sidebar.number_input("SibSp", min_value=0)
+    Parch = st.sidebar.number_input("Parch", min_value=0)
+    Fare = st.sidebar.number_input("Fare", min_value=0.0, max_value=500.0, value=30.0)
+    Sex = st.sidebar.selectbox("Sex", ['male', 'female'])
+    Embarked = st.sidebar.selectbox("Embarked", ['C', 'Q', 'S'])
+
+    data = {
+        'PassengerId': PassengerId,
+        'Pclass': Pclass,
+        'Age': Age,
+        'SibSp': SibSp,
+        'Parch': Parch,
+        'Fare': Fare,
+        'Sex_male': 1 if Sex == 'male' else 0,
+        'Sex_female': 1 if Sex == 'female' else 0,
+        'Embarked_C': 1 if Embarked == 'C' else 0,
+        'Embarked_Q': 1 if Embarked == 'Q' else 0,
+        'Embarked_S': 1 if Embarked == 'S' else 0
+    }
+    features = pd.DataFrame(data, index=[0])
+    return features
+
+input_df = user_input_features()
+
+# Main panel
+st.subheader("User Input Features")
+st.write(input_df)
 
 # Make prediction
-prediction = model.predict(input_data)[0]
-prediction_proba = model.predict_proba(input_data)[0]
+prediction = model.predict(input_df)
+prediction_proba = model.predict_proba(input_df)
 
-# Display the result
 st.subheader("Prediction")
-st.write("Survived" if prediction == 1 else "Did not Survive")
+survived = "Yes" if prediction[0] == 1 else "No"
+st.write(survived)
 
-# Display prediction probabilities
 st.subheader("Prediction Probability")
 st.write(prediction_proba)
 
