@@ -73,9 +73,12 @@ prediction_proba = model.predict_proba(input_df)
 
 # Display prediction
 st.subheader('Prediction')
-survived = 'Survived' if prediction[0] == 1 else 'Not Survived'
-st.write(survived)
+if prediction == 1:
+    st.write("The passenger is predicted to survive.")
+else:
+    st.write("The passenger is predicted to not survive.")
 
 # Display prediction probability
 st.subheader('Prediction Probability')
-st.write(prediction_proba)
+st.write(f"Probability of Not Surviving: {prediction_proba[0]:.2f}")
+st.write(f"Probability of Surviving: {prediction_proba[1]:.2f}")
