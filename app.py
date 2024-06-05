@@ -11,61 +11,58 @@ Original file is located at
 
 import streamlit as st
 import pandas as pd
-import joblib
+import pickle
 
 # Load the trained model
-model = joblib.load('logistic_model.pkl')
+model = pickle.load(open('logistic_model.pkl', 'rb'))
 
 # Title
 st.title("Titanic Survival Prediction")
 
-# User inputs
-st.header("Enter passenger details:")
-col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+# Introduction
+st.write("""
+This app predicts whether a passenger survived the Titanic disaster based on their features.
+""")
 
-with col1:
-    pclass = st.selectbox("Passenger Class", [1, 2, 3])
-with col2:
-    age = st.number_input("Age", min_value=0, max_value=100, value=25)
-with col3:
-    sibsp = st.number_input("Number of Siblings/Spouses Aboard", min_value=0, max_value=10, value=0)
-with col4:
-    parch = st.number_input("Number of Parents/Children Aboard", min_value=0, max_value=10, value=0)
-with col5:
-    fare = st.number_input("Fare", min_value=0, max_value=1000, value=50)
-with col6:
-    sex = st.selectbox("Sex", ["male", "female"])
-with col7:
-    embarked = st.selectbox("Port of Embarkation", ["C", "Q", "S"])
+# Collect user inputs
+Pclass = st.selectbox("Passenger Class (1 = 1st, 2 = 2nd, 3 = 3rd)", [1, 2, 3])
+Age = st.number_input("Age", min_value=0, max_value=100, value=25)
+SibSp = st.number_input("Number of Siblings/Spouses Aboard", min_value=0, max_value=10, value=0)
+Parch = st.number_input("Number of Parents/Children Aboard", min_value=0, max_value=10, value=0)
+Fare = st.number_input("Fare", min_value=0.0, max_value=500.0, value=50.0)
+Sex = st.selectbox("Sex", ["male", "female"])
+Embarked = st.selectbox("Port of Embarkation (C = Cherbourg, Q = Queenstown, S = Southampton)", ["C", "Q", "S"])
 
-# Encoding user inputs
-data = {
-    'Pclass': pclass,
-    'Age': age,
-    'SibSp': sibsp,
-    'Parch': parch,
-    'Fare': fare,
-    'Sex_female': 1 if sex == "female" else 0,
-    'Sex_male': 1 if sex == "male" else 0,
-    'Embarked_C': 1 if embarked == "C" else 0,
-    'Embarked_Q': 1 if embarked == "Q" else 0,
-    'Embarked_S': 1 if embarked == "S" else 0
-}
-input_data = pd.DataFrame([data])
+# Convert categorical variables to the same format as the training data
+Sex_female = 1 if Sex == "female" else 0
+Sex_male = 1 if Sex == "male" else 0
+Embarked_C = 1 if Embarked == "C" else 0
+Embarked_Q = 1 if Embarked == "Q" else 0
+Embarked_S = 1 if Embarked == "S" else 0
 
-# Prediction
+# Create a dataframe for the inputs
+input_data = pd.DataFrame({
+    'Pclass': [Pclass],
+    'Age': [Age],
+    'SibSp': [SibSp],
+    'Parch': [Parch],
+    'Fare': [Fare],
+    'Sex_female': [Sex_female],
+    'Sex_male': [Sex_male],
+    'Embarked_C': [Embarked_C],
+    'Embarked_Q': [Embarked_Q],
+    'Embarked_S': [Embarked_S]
+})
+
+# Make prediction
 prediction = model.predict(input_data)[0]
 prediction_proba = model.predict_proba(input_data)[0]
 
-# Display prediction
+# Display the result
 st.subheader("Prediction")
-if prediction == 1:
-    st.write("The passenger is predicted to survive.")
-else:
-    st.write("The passenger is predicted to not survive.")
+st.write("Survived" if prediction == 1 else "Did not Survive")
 
-# Display prediction probability with meaningful names
+# Display prediction probabilities
 st.subheader("Prediction Probability")
-st.write(f"Probability of Not Surviving: {prediction_proba[0]:.2f}")
-st.write(f"Probability of Surviving: {prediction_proba[1]:.2f}")
+st.write(prediction_proba)
 
