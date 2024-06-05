@@ -26,7 +26,7 @@ This app predicts whether a passenger survived the Titanic disaster based on the
 
 # Sidebar inputs
 # Sidebar for user input parameters
-st.sidebar.header('User Input Features')
+st.sidebar.header('Input Passenger Data')
 
 def user_input_features():
     PassengerId = st.sidebar.number_input('PassengerId', min_value=1, max_value=100000, value=1)
