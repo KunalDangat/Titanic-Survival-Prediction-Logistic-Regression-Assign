@@ -83,11 +83,21 @@ survived = 'Survived' if prediction[0] == 1 else 'Not Survived'
 st.write(survived)
 
 # Display prediction probability
+
 #st.subheader('Prediction Probability')
 #st.write(prediction_proba)
+
+#st.subheader('Prediction Probability')
+#proba_df = pd.DataFrame({
+#    'Probability of Not Surviving': [prediction_proba[0][0]],
+#    'Probability of Surviving': [prediction_proba[0][1]]
+#})
+#st.write(proba_df)
+
 st.subheader('Prediction Probability')
 proba_df = pd.DataFrame({
-    'Probability of Not Surviving': [prediction_proba[0][0]],
-    'Probability of Surviving': [prediction_proba[0][1]]
+    'Probability of Not Surviving': [f"{int(prediction_proba[0][0] * 100)}%"],
+    'Probability of Surviving': [f"{int(prediction_proba[0][1] * 100)}%"]
 })
+proba_df.index = ['']
 st.write(proba_df)
