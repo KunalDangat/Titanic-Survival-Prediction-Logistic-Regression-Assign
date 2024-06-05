@@ -99,5 +99,7 @@ proba_df = pd.DataFrame({
     'Probability of Not Surviving': [f"{int(prediction_proba[0][0] * 100)}%"],
     'Probability of Surviving': [f"{int(prediction_proba[0][1] * 100)}%"]
 })
-proba_df = proba_df.reset_index(drop=True)
-st.write(proba_df)
+#proba_df = proba_df.reset_index(drop=True)
+#st.write(proba_df)
+proba_html = proba_df.to_html(index=False)
+st.write(proba_html, unsafe_allow_html=True)
