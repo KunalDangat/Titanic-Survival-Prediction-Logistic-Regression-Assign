@@ -70,8 +70,9 @@ for col in required_columns:
 input_df = input_df[required_columns]
 
 # Display user input
-st.subheader('User Input Features')
-st.write(input_df)
+st.subheader('Input Passenger Data')
+input_html = input_df.to_html(index=False)
+st.write(input_html, unsafe_allow_html=True)
 
 # Prediction
 prediction = model.predict(input_df)
